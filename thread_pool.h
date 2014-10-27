@@ -48,11 +48,11 @@ public:
 private:
 	typedef std::function<void()> job_type;
 
-	enum state_t
+	enum class state
 	{
-		STATE_INVALID,
-		STATE_RUNNING,
-		STATE_STOP
+		INVALID,
+		RUNNING,
+		STOP
 	};
 
 private:
@@ -64,7 +64,7 @@ private:
 	std::atomic<size_t> m_free_size;
 
 	std::queue<job_type> m_jobs;
-	state_t m_state;
+	state m_state;
 	std::mutex m_mutex;
 	std::condition_variable m_cv;
 };

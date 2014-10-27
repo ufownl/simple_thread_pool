@@ -2,7 +2,7 @@
 
 thread_pool::thread_pool(size_t sz)
 	: m_free_size(sz)
-	, m_state(sz ? STATE_RUNNING : STATE_INVALID)
+	, m_state(sz ? state::RUNNING : state::INVALID)
 {
 	m_threads.reserve(sz ? sz : 1);
 	for (size_t i = 0; i < sz; ++i)
@@ -15,7 +15,7 @@ void thread_pool::stop()
 {
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
-		m_state = STATE_STOP;
+		m_state = state::STOP;
 	}
 	m_cv.notify_all();
 }
@@ -51,9 +51,9 @@ void thread_pool::thread_func()
 	for (;;)
 	{
 		std::unique_lock<std::mutex> lock(m_mutex);
-		m_cv.wait(lock, [this] { return !m_jobs.empty() || m_state != STATE_RUNNING; } );
+		m_cv.wait(lock, [this] { return !m_jobs.empty() || m_state != state::RUNNING; } );
 
-		if (m_state != STATE_RUNNING)
+		if (m_state != state::RUNNING)
 		{
 			break;
 		}
