@@ -26,3 +26,5 @@
 *.exe
 *.out
 *.app
+example
+parallel_sort
