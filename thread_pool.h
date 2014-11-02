@@ -4,6 +4,7 @@
 #include <vector>
 #include <atomic>
 #include <queue>
+#include <memory>
 #include <functional>
 #include <type_traits>
 #include <future>
@@ -22,13 +23,12 @@ public:
 	{
 		typedef std::packaged_task<typename std::result_of<F(ARGS...)>::type(ARGS...)> task_type;
 		
-		task_type* task = new task_type(std::forward<F>(func));
+		std::shared_ptr<task_type> task(new task_type(std::forward<F>(func)));
 		auto result = task->get_future();
 
 		dispatch(std::bind([task] (ARGS... args) mutable
 					{
-						(*task)(args...);
-						delete task;
+						(*task)(std::forward<ARGS>(args)...);
 					}, std::forward<ARGS>(args)...));
 
 		return result;
@@ -56,7 +56,7 @@ private:
 	};
 
 private:
-	void dispatch(const job_type& job);
+	void dispatch(job_type job);
 	void thread_func();
 
 private:

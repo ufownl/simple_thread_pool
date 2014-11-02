@@ -47,12 +47,19 @@ double now()
 	return tv.tv_sec + tv.tv_usec / 1000000.0;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
 	srand(time(nullptr));
 	
 	size_t n;
-	std::cin >> n;
+	if (argc == 1)
+	{
+		std::cin >> n;
+	}
+	else
+	{
+		n = atoi(argv[1]);
+	}
 
 	std::vector<int> v0;
 	v0.reserve(n);

@@ -37,11 +37,11 @@ size_t thread_pool::job_size()
 	return m_jobs.size();
 }
 
-void thread_pool::dispatch(const job_type& job)
+void thread_pool::dispatch(job_type job)
 {
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
-		m_jobs.push(job);
+		m_jobs.push(std::move(job));
 	}
 	m_cv.notify_one();
 }
@@ -58,7 +58,7 @@ void thread_pool::thread_func()
 			break;
 		}
 
-		job_type job = m_jobs.front();
+		job_type job = std::move(m_jobs.front());
 		m_jobs.pop();
 
 		lock.unlock();
