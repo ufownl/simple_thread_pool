@@ -1,8 +1,6 @@
 #include <iostream>
 #include "thread_pool.h"
 
-#define THREAD_CNT	4
-
 struct test
 {
 	test() = default;
@@ -17,7 +15,7 @@ void hello(const test&)
 
 int main()
 {
-	thread_pool tp(THREAD_CNT);
+	thread_pool tp(std::thread::hardware_concurrency());
 	test t;
 	tp.async(&hello, t).wait();
 	tp.async(&hello, std::move(t)).wait();

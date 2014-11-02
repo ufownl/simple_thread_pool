@@ -5,8 +5,6 @@
 #include <sys/time.h>
 #include "thread_pool.h"
 
-#define THREAD_CNT	4
-
 template <class _it>
 void parallel_sort(thread_pool& tp, _it l, _it r)
 {
@@ -83,7 +81,7 @@ int main(int argc, char* argv[])
 
 	{
 		double t = now();
-		thread_pool tp(THREAD_CNT);
+		thread_pool tp(std::thread::hardware_concurrency());
 		parallel_sort(tp, v1.begin(), v1.end());
 		tp.stop();
 		std::cout << "parallel_sort duration: " << now() - t << std::endl;

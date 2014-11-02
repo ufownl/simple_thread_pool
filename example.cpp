@@ -1,7 +1,6 @@
 #include <iostream>
 #include "thread_pool.h"
 
-#define THREAD_CNT	4
 #define TASK_CNT	10
 
 int fib(int n)
@@ -11,7 +10,7 @@ int fib(int n)
 
 int main()
 {
-	thread_pool tp(THREAD_CNT);
+	thread_pool tp(std::thread::hardware_concurrency());
 	
 	std::future<int> results[TASK_CNT];
 	for (size_t i = 0; i < TASK_CNT; ++i)
