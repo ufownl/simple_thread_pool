@@ -23,7 +23,7 @@ public:
 	{
 		typedef std::packaged_task<typename std::result_of<F(ARGS...)>::type(ARGS...)> task_type;
 		
-		std::shared_ptr<task_type> task(new task_type(std::forward<F>(func)));
+		auto task = std::make_shared<task_type>(std::forward<F>(func));
 		auto result = task->get_future();
 
 		dispatch(std::bind([task] (ARGS... args) mutable
