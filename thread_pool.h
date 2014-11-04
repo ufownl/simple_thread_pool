@@ -24,14 +24,13 @@ public:
 		typedef std::packaged_task<typename std::result_of<F(ARGS...)>::type(ARGS...)> task_type;
 		
 		auto task = std::make_shared<task_type>(std::forward<F>(func));
-		auto result = task->get_future();
 
 		dispatch(std::bind([task] (ARGS... args) mutable
 					{
 						(*task)(std::forward<ARGS>(args)...);
 					}, std::forward<ARGS>(args)...));
 
-		return result;
+		return task->get_future();
 	}
 
 	void stop();
