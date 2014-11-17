@@ -38,7 +38,7 @@ public:
 
 	size_t thread_size() const { return m_threads.size(); }
 	size_t free_size() const { return m_free_size.load(); }
-	size_t job_size();
+	size_t job_size() const;
 
 public:
 	thread_pool(const thread_pool&) = delete;
@@ -64,7 +64,7 @@ private:
 
 	std::queue<job_type> m_jobs;
 	state m_state;
-	std::mutex m_mutex;
+	mutable std::mutex m_mutex;
 	std::condition_variable m_cv;
 };
 

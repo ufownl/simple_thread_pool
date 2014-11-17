@@ -31,7 +31,7 @@ void thread_pool::join()
 	}
 }
 
-size_t thread_pool::job_size()
+size_t thread_pool::job_size() const
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
 	return m_jobs.size();
