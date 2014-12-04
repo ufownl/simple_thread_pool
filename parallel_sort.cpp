@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <chrono>
 #include <stdlib.h>
 #include <time.h>
-#include <sys/time.h>
 #include "thread_pool.h"
 
 template <class _it>
@@ -38,13 +38,6 @@ void parallel_sort(thread_pool& tp, _it l, _it r)
 	result.wait();
 }
 
-double now()
-{
-	timeval tv;
-	gettimeofday(&tv, nullptr);
-	return tv.tv_sec + tv.tv_usec / 1000000.0;
-}
-
 int main(int argc, char* argv[])
 {
 	srand(time(nullptr));
@@ -69,9 +62,9 @@ int main(int argc, char* argv[])
 	std::vector<int> v1(v0);
 
 	{
-		double t = now();
+		auto t = std::chrono::high_resolution_clock::now();
 		std::sort(v0.begin(), v0.end());
-		std::cout << "std::sort duration: " << now() - t << std::endl;
+		std::cout << "std::sort duration: " << std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - t).count() << std::endl;
 
 		if (n <= 10)
 		{
@@ -80,11 +73,11 @@ int main(int argc, char* argv[])
 	}
 
 	{
-		double t = now();
+		auto t = std::chrono::high_resolution_clock::now();
 		thread_pool tp(std::thread::hardware_concurrency());
 		parallel_sort(tp, v1.begin(), v1.end());
 		tp.stop();
-		std::cout << "parallel_sort duration: " << now() - t << std::endl;
+		std::cout << "parallel_sort duration: " << std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - t).count() << std::endl;
 
 		if (n <= 10)
 		{
